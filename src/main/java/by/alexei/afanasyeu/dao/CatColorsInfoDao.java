@@ -2,33 +2,24 @@ package by.alexei.afanasyeu.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Map;
 
 public class CatColorsInfoDao extends BaseDao {
-    private PreparedStatement truncateStmt;
-    private PreparedStatement saveCountColouredCatsStmt;
+    private PreparedStatement setColorInfoStmt;
 
     public CatColorsInfoDao() throws DaoException {
         super();
         try {
-            truncateStmt = con.prepareStatement("TRUNCATE TABLE cat_colors_info;");
-            saveCountColouredCatsStmt = con.prepareStatement(" INSERT INTO cat_colors_info(color, count) VALUES (?::cat_color, ?)");
+            setColorInfoStmt = con.prepareStatement("TRUNCATE TABLE cat_colors_info; " +
+                    "INSERT INTO cat_colors_info(color, count) " +
+                    "SELECT color, count(*) AS count FROM cats GROUP BY color");
         } catch (SQLException e) {
             throw new DaoException("Can't init CatColorsInfoDao", e);
         }
     }
 
-    public void saveColorsInfo(Map<String, Integer> catColorsInfo) {
+    public void setColorsInfo() {
         try {
-            con.setAutoCommit(false);
-            for (Map.Entry<String, Integer> entry : catColorsInfo.entrySet()) {
-                saveCountColouredCatsStmt.setString(1, entry.getKey());
-                saveCountColouredCatsStmt.setInt(2, entry.getValue());
-                saveCountColouredCatsStmt.addBatch();
-            }
-            truncateStmt.execute();
-            saveCountColouredCatsStmt.executeBatch();
-            con.commit();
+            setColorInfoStmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -11,16 +11,13 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
 import java.net.URI;
-import java.util.Map;
 
 public class TaskLauncher {
     private static final URI BASE_URI = URI.create("http://localhost:8080/");
 
     public void startFirstTask() {
-        try (CatsDao catsDao = new CatsDao();
-             CatColorsInfoDao catColorsInfoDao = new CatColorsInfoDao()) {
-            Map<String, Integer> catColorsInfo = catsDao.getColorsInfo();
-            catColorsInfoDao.saveColorsInfo(catColorsInfo);
+        try (CatColorsInfoDao catColorsInfoDao = new CatColorsInfoDao()) {
+            catColorsInfoDao.setColorsInfo();
         } catch (Exception e) {
             e.printStackTrace();
         }

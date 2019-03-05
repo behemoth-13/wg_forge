@@ -37,10 +37,6 @@ public class GetController {
                     Integer limit
     ) {
         try {
-            System.out.println(sortBy);
-            System.out.println(order);
-            System.out.println(offset);
-            System.out.println(limit);
             List<Cat> list = service.getCatList();
             return Response.ok(list).build();
         } catch (Exception e) {

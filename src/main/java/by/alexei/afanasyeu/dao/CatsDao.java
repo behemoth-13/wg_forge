@@ -11,7 +11,6 @@ import java.sql.Types;
 import java.util.*;
 
 public class CatsDao extends BaseDao {
-    private PreparedStatement getCountColouredCatsStmt;
     private PreparedStatement getTailAndWhiskersLengthStmt;
     private PreparedStatement getAllStmt;
     private PreparedStatement saveStmt;
@@ -20,27 +19,12 @@ public class CatsDao extends BaseDao {
     public CatsDao() throws DaoException {
         super();
         try {
-            getCountColouredCatsStmt = con.prepareStatement("SELECT color, count(*) AS count FROM cats GROUP BY color");
             getTailAndWhiskersLengthStmt = con.prepareStatement("SELECT tail_length, whiskers_length FROM cats");
             getAllStmt = con.prepareStatement("SELECT name, color, tail_length, whiskers_length FROM cats");
             saveStmt = con.prepareStatement("INSERT INTO cats (name, color, tail_length, whiskers_length) VALUES (?, ?::cat_color, ?, ?)");
             isNameExistStmt = con.prepareStatement("SELECT count(*) AS count FROM cats WHERE name=?");
         } catch (SQLException e) {
             throw new DaoException("Can't init CatsDao", e);
-        }
-    }
-
-    public Map<String, Integer> getColorsInfo() throws DaoException {
-        Map<String, Integer> result = new HashMap<>();
-        try (ResultSet rs = getCountColouredCatsStmt.executeQuery()){
-            while (rs.next()) {
-                String color = rs.getString("color");
-                Integer count = rs.getInt("count");
-                result.put(color, count);
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new DaoException(e);
         }
     }
 
@@ -92,7 +76,6 @@ public class CatsDao extends BaseDao {
             } else {
                 throw new DaoException("Can't check is cat exist.");
             }
-
             saveStmt.setString(1, cat.getName());
             saveStmt.setString(2, cat.getColor());
             if (cat.getTailLength() != null) {
