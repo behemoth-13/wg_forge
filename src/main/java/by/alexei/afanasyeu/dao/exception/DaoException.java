@@ -1,4 +1,4 @@
-package by.alexei.afanasyeu.dao;
+package by.alexei.afanasyeu.dao.exception;
 
 public class DaoException extends Exception{
     public static final String CAT_EXIST = "Cat already exist";

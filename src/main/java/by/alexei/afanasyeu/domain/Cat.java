@@ -1,17 +1,18 @@
 package by.alexei.afanasyeu.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class Cat {
-    @NotNull(message = "котики не должны быть безымянными!")
+    @NotBlank(message = "котики не должны быть безымянными!")
     private String name;
-    @NotNull
+    @NotNull(message = "котики не могут быть бесцветными")
     @Pattern(regexp = "black|white|black & white|red|red & white|red & black & white",
-            message = "permitted colors: black, white, black & white, red, red & white, red & black & white")
+            message = "цвета котиков: black, white, black & white, red, red & white, red & black & white")
     private String color;
     @Min(value = 0, message = "tail length cannot be negative")
     @JsonProperty(value = "tail_length")

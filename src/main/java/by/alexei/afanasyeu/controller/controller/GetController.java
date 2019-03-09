@@ -1,4 +1,4 @@
-package by.alexei.afanasyeu.controller;
+package by.alexei.afanasyeu.controller.controller;
 
 import by.alexei.afanasyeu.domain.Cat;
 import by.alexei.afanasyeu.service.CatService;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Path("cats")
 public class GetController {
-    private CatService service = CatService.getInstance();
+    private CatService service = new CatService();
 
     //curl -X GET http://localhost:8080/cats
     //curl -X GET http://localhost:8080/cats?attribute=name&order=asc
@@ -23,21 +23,21 @@ public class GetController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCats(
             @Pattern(regexp = "name|color|tail_length|whiskers_length",
-                    message = "only permitted colors")
+                    message = "attribute must be one of [name, color, tail_length, whiskers_length]")
             @DefaultValue("name") @QueryParam("attribute")
                     String sortBy,
-            @Pattern(regexp = "asc|desc", message = "asc or desc")
+            @Pattern(regexp = "asc|desc", message = "order must be asc or desc")
             @DefaultValue("asc") @QueryParam("order")
                     String order,
-            @Min(value = 0, message = "only positive")
+            @Min(value = 0, message = "offset must be at least 0")
             @DefaultValue("0") @QueryParam("offset")
                     int offset,
-            @Min(value = 0, message = "only positive")
+            @Min(value = 1, message = "limit must be at least 1")
             @QueryParam("limit")
                     Integer limit
     ) {
         try {
-            List<Cat> list = service.getCatList();
+            List<Cat> list = service.getCatList(sortBy, order, offset, limit);
             return Response.ok(list).build();
         } catch (Exception e) {
             e.printStackTrace();

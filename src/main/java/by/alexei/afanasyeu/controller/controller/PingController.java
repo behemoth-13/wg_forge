@@ -1,4 +1,4 @@
-package by.alexei.afanasyeu.controller;
+package by.alexei.afanasyeu.controller.controller;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

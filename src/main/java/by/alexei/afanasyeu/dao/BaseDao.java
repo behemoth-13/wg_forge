@@ -1,5 +1,7 @@
 package by.alexei.afanasyeu.dao;
 
+import by.alexei.afanasyeu.dao.exception.DaoException;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 

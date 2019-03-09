@@ -1,4 +1,4 @@
-package by.alexei.afanasyeu.controller;
+package by.alexei.afanasyeu.controller.rateLimitFilter;
 
 import org.apache.commons.collections4.QueueUtils;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
@@ -9,11 +9,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 
 @Provider
-public class RateLimitingFilter implements ContainerRequestFilter {
-    private static int interval = 0;
+public class RateLimitingFilterStrictStrategy implements ContainerRequestFilter {
+    private static long interval = 0;
     private static Queue<Long> queue = null;
 
     @Override
@@ -27,24 +26,11 @@ public class RateLimitingFilter implements ContainerRequestFilter {
         }
     }
 
-    public static void setLimitParams(int requestCount, int timeUnitCount, TimeUnit unit) {
+    public static void setLimitParams(int requestCount, long interval) {
+        RateLimitingFilterStrictStrategy.interval = interval;
         queue = QueueUtils.synchronizedQueue(new CircularFifoQueue<>(requestCount));
         for (int i = 0; i < requestCount; i++) {
             queue.add(0L);
-        }
-        switch(unit) {
-            case SECONDS:
-                interval = 1000*timeUnitCount;
-                break;
-            case MINUTES:
-                interval = 1000*60*timeUnitCount;
-                break;
-            case HOURS:
-                interval = 1000*60*60*timeUnitCount;
-                break;
-            case DAYS:
-                interval = 1000*60*60*24*timeUnitCount;
-                break;
         }
     }
 }

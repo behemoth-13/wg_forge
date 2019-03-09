@@ -1,5 +1,6 @@
 package by.alexei.afanasyeu.dao;
 
+import by.alexei.afanasyeu.dao.exception.DaoException;
 import by.alexei.afanasyeu.domain.StatInfo;
 
 import java.sql.PreparedStatement;

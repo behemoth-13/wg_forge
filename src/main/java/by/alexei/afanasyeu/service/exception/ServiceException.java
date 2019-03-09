@@ -1,4 +1,4 @@
-package by.alexei.afanasyeu.service;
+package by.alexei.afanasyeu.service.exception;
 
 public class ServiceException extends Exception{
     public ServiceException() {

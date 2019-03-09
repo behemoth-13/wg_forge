@@ -1,28 +1,26 @@
 package by.alexei.afanasyeu.dao;
 
+import by.alexei.afanasyeu.dao.exception.DaoException;
 import by.alexei.afanasyeu.domain.Cat;
 import by.alexei.afanasyeu.domain.MeanMedianMode;
 import by.alexei.afanasyeu.domain.StatInfo;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.*;
 
 public class CatsDao extends BaseDao {
     private PreparedStatement getTailAndWhiskersLengthStmt;
-    private PreparedStatement getAllStmt;
     private PreparedStatement saveStmt;
     private PreparedStatement isNameExistStmt;
+    private PreparedStatement deleteByNameStmt;
 
     public CatsDao() throws DaoException {
         super();
         try {
             getTailAndWhiskersLengthStmt = con.prepareStatement("SELECT tail_length, whiskers_length FROM cats");
-            getAllStmt = con.prepareStatement("SELECT name, color, tail_length, whiskers_length FROM cats");
             saveStmt = con.prepareStatement("INSERT INTO cats (name, color, tail_length, whiskers_length) VALUES (?, ?::cat_color, ?, ?)");
             isNameExistStmt = con.prepareStatement("SELECT count(*) AS count FROM cats WHERE name=?");
+            deleteByNameStmt = con.prepareStatement("DELETE FROM cats WHERE name=?");
         } catch (SQLException e) {
             throw new DaoException("Can't init CatsDao", e);
         }
@@ -48,9 +46,18 @@ public class CatsDao extends BaseDao {
         }
     }
 
-    public List<Cat> getAll() throws DaoException {
+    public List<Cat> getAll(String sortBy, String order, int offset, Integer limit) throws DaoException {
         List<Cat> result = new ArrayList<>();
-        try (ResultSet rs = getAllStmt.executeQuery()){
+        Statement stmt = null;
+        try {
+            String query;
+            if (limit == null) {
+                query = String.format("SELECT name, color, tail_length, whiskers_length FROM cats ORDER BY %s %s OFFSET %d", sortBy, order, offset);
+            } else {
+                query = String.format("SELECT name, color, tail_length, whiskers_length FROM cats ORDER BY %s %s OFFSET %d LIMIT %d", sortBy, order, offset, limit);
+            }
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 String name = rs.getString("name");
                 String color = rs.getString("color");
@@ -59,8 +66,16 @@ public class CatsDao extends BaseDao {
                 result.add(new Cat(name, color, tailLength, whiskersLength));
             }
             return result;
-        } catch (SQLException e) {
+        } catch (SQLException e ) {
             throw new DaoException(e);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -90,6 +105,15 @@ public class CatsDao extends BaseDao {
             }
             saveStmt.execute();
             con.commit();
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
+    }
+
+    public void deleteByName(String name) throws DaoException {
+        try {
+            deleteByNameStmt.setString(1, name);
+            deleteByNameStmt.execute();
         } catch (SQLException e) {
             throw new DaoException(e);
         }

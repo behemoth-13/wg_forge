@@ -1,6 +1,4 @@
-package by.alexei.afanasyeu.controller;
-
-import com.sun.deploy.util.StringUtils;
+package by.alexei.afanasyeu.controller.mapper;
 
 import javax.inject.Singleton;
 import javax.validation.ConstraintViolation;

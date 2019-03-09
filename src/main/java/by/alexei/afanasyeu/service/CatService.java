@@ -1,20 +1,16 @@
 package by.alexei.afanasyeu.service;
 
 import by.alexei.afanasyeu.dao.CatsDao;
-import by.alexei.afanasyeu.dao.DaoException;
+import by.alexei.afanasyeu.dao.exception.DaoException;
 import by.alexei.afanasyeu.domain.Cat;
+import by.alexei.afanasyeu.service.exception.ServiceException;
 
 import java.util.List;
 
 public class CatService {
     private CatsDao catsDao;
-    private static CatService instance = new CatService();
 
-    public static CatService getInstance() {
-        return instance;
-    }
-
-    private CatService(){
+    public CatService(){
         try {
             catsDao = new CatsDao();
         } catch (DaoException e) {
@@ -22,9 +18,9 @@ public class CatService {
         }
     }
 
-    public List<Cat> getCatList() throws ServiceException {
+    public List<Cat> getCatList(String sortBy, String order, int offset, Integer limit) throws ServiceException {
         try {
-            return catsDao.getAll();
+            return catsDao.getAll(sortBy, order, offset, limit);
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
