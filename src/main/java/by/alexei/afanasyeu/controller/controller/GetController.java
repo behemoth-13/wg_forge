@@ -12,13 +12,21 @@ import java.util.List;
 
 @Path("cats")
 public class GetController {
-    private CatService service = new CatService();
+    private CatService service;
 
     //curl -X GET http://localhost:8080/cats
     //curl -X GET http://localhost:8080/cats?attribute=name&order=asc
     //curl -X GET http://localhost:8080/cats?attribute=tail_length&order=desc
     //curl -X GET http://localhost:8080/cats?offset=10&limit=10
     //curl -X GET http://localhost:8080/cats?attribute=color&order=asc&offset=5&limit=2
+    public GetController() {
+        service = new CatService();
+    }
+
+    public GetController(CatService service) {
+        this.service = service;
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCats(

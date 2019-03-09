@@ -2,9 +2,10 @@ package by.alexei.afanasyeu.task5;
 
 import by.alexei.afanasyeu.controller.mapper.ConstraintViolationMapper;
 import by.alexei.afanasyeu.controller.controller.PostController;
-import by.alexei.afanasyeu.dao.CatsDao;
 import by.alexei.afanasyeu.dao.exception.DaoException;
 import by.alexei.afanasyeu.domain.Cat;
+import by.alexei.afanasyeu.service.CatService;
+import by.alexei.afanasyeu.service.exception.ServiceException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.netty.connector.NettyConnectorProvider;
@@ -15,7 +16,6 @@ import org.glassfish.jersey.test.netty.NettyTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerException;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 import org.glassfish.jersey.test.util.runner.ConcurrentRunner;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +25,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @RunWith(ConcurrentRunner.class)
 public class PostControllerTest extends JerseyTest {
@@ -36,7 +35,19 @@ public class PostControllerTest extends JerseyTest {
     @Override
     protected ResourceConfig configure() {
         enable(TestProperties.LOG_TRAFFIC);
-        return new ResourceConfig(PostController.class, ConstraintViolationMapper.class);
+        CatService mockService = new CatService(){
+            Set<Cat> cats = new HashSet<>();
+            public void saveCat(Cat cat) throws ServiceException {
+                if (!cats.contains(cat)) {
+                    cats.add(cat);
+                } else {
+                    throw new ServiceException(DaoException.CAT_EXIST);
+                }
+            }
+        };
+        ResourceConfig config = new ResourceConfig();
+        config.register(new PostController(mockService)).register(ConstraintViolationMapper.class);
+        return config;
     }
 
     @Override
@@ -182,13 +193,5 @@ public class PostControllerTest extends JerseyTest {
         Assert.assertTrue(expectedErrors.contains(errors.get("errors").get(1).asText()));
         Assert.assertTrue(expectedErrors.contains(errors.get("errors").get(2).asText()));
         Assert.assertTrue(expectedErrors.contains(errors.get("errors").get(3).asText()));
-    }
-
-    @AfterClass
-    public static void clear() throws DaoException {
-        CatsDao dao = new CatsDao();
-        dao.deleteByName("Tom");
-        dao.deleteByName("Kitty");
-        dao.deleteByName("Murzik");
     }
 }

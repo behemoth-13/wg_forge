@@ -107,7 +107,7 @@ public class App {
                     break;
             }
             //validation rateLimiterType
-            if (!rateLimiterType.equals(TaskLauncher.GENERAL) || !rateLimiterType.equals(TaskLauncher.STRICT)) {
+            if (!rateLimiterType.equals(TaskLauncher.GENERAL) && !rateLimiterType.equals(TaskLauncher.STRICT)) {
                 throw new IllegalArgumentException("Тип RateLimiter'a '" + args[4] + "' не доступен.\n");
             }
             return new RateLimiterConfig(requests, interval, rateLimiterType);

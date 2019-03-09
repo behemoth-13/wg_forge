@@ -15,8 +15,17 @@ import javax.ws.rs.core.Response;
 
 @Path("cat")
 public class PostController {
-    private CatService service = new CatService();
+    private CatService service;
     //curl -X POST http://localhost:8080/cat \-d "{\"name\": \"Tihon\", \"color\": \"red & white\", \"tail_length\": 15, \"whiskers_length\": 12}"
+
+    public PostController() {
+        service = new CatService();
+    }
+
+    public PostController(CatService service) {
+        this.service = service;
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

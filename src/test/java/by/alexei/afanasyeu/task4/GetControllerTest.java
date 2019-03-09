@@ -2,6 +2,8 @@ package by.alexei.afanasyeu.task4;
 
 import by.alexei.afanasyeu.controller.mapper.ConstraintViolationMapper;
 import by.alexei.afanasyeu.controller.controller.GetController;
+import by.alexei.afanasyeu.domain.Cat;
+import by.alexei.afanasyeu.service.CatService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.netty.connector.NettyConnectorProvider;
@@ -20,6 +22,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +34,14 @@ public class GetControllerTest extends JerseyTest {
     @Override
     protected ResourceConfig configure() {
         enable(TestProperties.LOG_TRAFFIC);
-        return new ResourceConfig(GetController.class, ConstraintViolationMapper.class);
+        CatService mockService = new CatService(){
+            public List<Cat> getCatList(String sortBy, String order, int offset, Integer limit) {
+                return new ArrayList<>();
+            }
+        };
+        ResourceConfig config = new ResourceConfig();
+        config.register(new GetController(mockService)).register(ConstraintViolationMapper.class);
+        return config;
     }
 
     @Override

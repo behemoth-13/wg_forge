@@ -22,6 +22,8 @@ public class RateLimitingFilterStrictStrategy implements ContainerRequestFilter 
             Long last = queue.peek();
             if (now - last < interval) {
                 ctx.abortWith(Response.status(Response.Status.TOO_MANY_REQUESTS).build());
+            } else {
+                queue.add(now);
             }
         }
     }
