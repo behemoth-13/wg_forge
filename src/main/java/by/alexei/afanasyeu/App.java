@@ -118,13 +118,13 @@ public class App {
 
     private static void printHelp() {
         System.out.println(
-                        "Примеры запуска: апрою.jar 1\n" +
-                        "   java -jar wgforge.jar 1  ->  запуск 1-го задания.\n" +
-                        "   java -jar wgforge.jar 2  ->  запуск 2-го задания.\n" +
-                        "   java -jar wgforge.jar 3  ->  запуск 3-го задания.\n" +
-                        "   java -jar wgforge.jar 4  ->  запуск 4-го задания.\n" +
-                        "   java -jar wgforge.jar 5  ->  запуск 5-го задания.\n" +
-                        "   java -jar wgforge.jar 6 600 1 min general  ->  запуск 6-го задания. Параметры:\n" +
+                        "Примеры запуска: wgforge-1.0.jar 1\n" +
+                        "   java -jar wgforge-1.0.jar 1  ->  запуск 1-го задания.\n" +
+                        "   java -jar wgforge-1.0.jar 2  ->  запуск 2-го задания.\n" +
+                        "   java -jar wgforge-1.0.jar 3  ->  запуск 3-го задания.\n" +
+                        "   java -jar wgforge-1.0.jar 4  ->  запуск 4-го задания.\n" +
+                        "   java -jar wgforge-1.0.jar 5  ->  запуск 5-го задания.\n" +
+                        "   java -jar wgforge-1.0.jar 6 600 1 min general  ->  запуск 6-го задания. Параметры:\n" +
                         "       600 -> лимит запросов;\n" +
                         "       1   -> количество временных единиц, за которое можно отправить лимит запросов;\n" +
                         "       min -> тип временных единиц, доступны:\n" +
@@ -135,6 +135,6 @@ public class App {
                         "       general -> тип RateLimiter'а доступны:\n" +
                         "               general - быстрый, но работающий с погрешностью ограничитель;\n" +
                         "               strict  - гарантирует ограничение на любом отрезке времени;\n" +
-                        "   java -jar wgforge.jar all 600 1 min general  ->  запуск всех заданий. Параметры как в 6-ом задании.\n");
+                        "   java -jar wgforge-1.0.jar all 600 1 min general  ->  запуск всех заданий. Параметры как в 6-ом задании.\n");
     }
 }
